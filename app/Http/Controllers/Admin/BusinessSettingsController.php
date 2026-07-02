@@ -152,7 +152,7 @@ class BusinessSettingsController extends Controller
 
         $curr_logo = $this->business_setting->where(['key' => 'logo'])->first();
         $this->business_setting->updateOrInsert(['key' => 'logo'], [
-            'value' => $request->has('logo') ? Helpers::update('restaurant/', $curr_logo->value, 'png', $request->file('logo')) : $curr_logo->value
+            'value' => $request->has('logo') ? Helpers::update('restaurant/', $curr_logo->value ?? null, 'png', $request->file('logo')) : ($curr_logo->value ?? null)
         ]);
 
         $this->business_setting->updateOrInsert(['key' => 'phone'], [
