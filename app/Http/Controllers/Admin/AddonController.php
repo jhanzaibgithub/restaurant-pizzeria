@@ -8,6 +8,7 @@ use App\Model\AddOn;
 use App\Model\Translation;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -160,11 +161,24 @@ class AddonController extends Controller
         return back();
     }
 
-    public function status(Request $request): RedirectResponse
+    public function status(Request $request): RedirectResponse|JsonResponse
     {
         $addon = $this->addon->find($request->id);
-        $addon->status = $request->status;
+        if (!$addon) {
+            if ($request->ajax()) {
+                return response()->json(['message' => translate('Addon not found!')], 404);
+            }
+
+            Toastr::error(translate('Addon not found!'));
+            return back();
+        }
+
+        $addon->status = (int)$request->query('status', $request->route('status'));
         $addon->save();
+
+        if ($request->ajax()) {
+            return response()->json(['message' => translate('Addon status updated!')], 200);
+        }
 
         Toastr::success(translate('Addon status updated!'));
         return back();

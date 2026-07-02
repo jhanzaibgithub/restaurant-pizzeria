@@ -132,7 +132,7 @@
                                                         <input class="switcher_input" type="checkbox"
                                                             {{ $addon['status'] == 1 ? 'checked' : '' }}
                                                             id="{{ $addon['id'] }}" onchange="status_change(this)"
-                                                            data-url="{{ route('admin.addon.status', [$addon['id'], 1]) }}">
+                                                            data-url="{{ route('admin.addon.status', [$addon['id'], $addon['status'] == 1 ? 0 : 1]) }}">
                                                         <span class="switcher_control"></span>
                                                     </label>
                                                     <a class="btn btn-secondary btn-sm edit square-btn"
