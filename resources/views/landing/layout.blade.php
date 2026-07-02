@@ -9,7 +9,12 @@
     <meta property="og:title" content="@yield('og_title', 'Restaurant Pizzeria - Manage Your Restaurant Empire')">
     <meta property="og:description" content="@yield('og_description', 'Run admin, branch, customer, driver, delivery, and analytics workflows from one modern restaurant platform.')">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="{{ asset('assets/admin/img/favicon.png') }}">
+    <meta property="og:image" content="{{ asset('assets/admin/img/logo1.png') }}">
+    <meta property="og:image:alt" content="Restaurant Pizzeria logo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('og_title', 'Restaurant Pizzeria - Manage Your Restaurant Empire')">
+    <meta name="twitter:description" content="@yield('og_description', 'Run admin, branch, customer, driver, delivery, and analytics workflows from one modern restaurant platform.')">
+    <meta name="twitter:image" content="{{ asset('assets/admin/img/logo1.png') }}">
 
     <title>@yield('title', 'Restaurant Pizzeria - Manage Your Restaurant Empire')</title>
 
