@@ -5,12 +5,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
     Route::get('lang/{locale}', 'LanguageController@lang')->name('lang');
 
-    /** App Activation */
-    Route::group(['middleware' => ['app_activate:get_from_route']], function () {
-        Route::get('app-activate/{app_id}', 'SystemController@app_activate')->name('app-activate');
-        Route::post('app-activate/{app_id}', 'SystemController@activation_submit');
-    });
-
     /** Authentication */
     Route::group(['namespace' => 'Auth', 'prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::get('/code/captcha/{tmp}', 'LoginController@captcha')->name('default-captcha');

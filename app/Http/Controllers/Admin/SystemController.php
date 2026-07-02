@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Admin;
-use App\Model\BusinessSetting;
 use App\Model\Order;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
@@ -18,7 +17,6 @@ class SystemController extends Controller
     public function __construct(
         private Order           $order,
         private Admin           $admin,
-        private BusinessSetting $business_setting,
     )
     {
     }
@@ -98,70 +96,4 @@ class SystemController extends Controller
         return back();
     }
 
-    /**
-     * @param Request $request
-     * @param $app_id
-     * @return Renderable
-     */
-    public function app_activate(Request $request, $app_id): Renderable
-    {
-        $app_name = 'default';
-        $app_link = 'default';
-        foreach (APPS as $app) {
-            if ($app['software_id'] == $app_id) {
-                $app_name = $app['app_name'];
-                $app_link = $app['buy_now_link'];
-            }
-        }
-
-        return view('admin-views.app-activation', compact('app_id', 'app_name', 'app_link'));
-    }
-
-    /**
-     * @param Request $request
-     * @param $app_id
-     * @return RedirectResponse
-     */
-    public function activation_submit(Request $request, $app_id): RedirectResponse
-    {
-        $response_body = array(
-            'is_valid' => true,
-            'result' => array(
-                'item' => array(
-                    'id' => $app_id
-                )
-            )
-        );
-
-        try {
-            if ($response_body['is_valid'] && $response_body['result']['item']['id'] == $app_id) {
-                $previous_active = json_decode($this->business_setting->where('key', 'app_activation')->first()?->value ?? '[]');
-                $found = 0;
-                foreach ($previous_active as $key => $item) {
-                    if ($item->software_id == $app_id) {
-                        $found = 1;
-                    }
-                }
-                if (!$found) {
-                    $previous_active[] = [
-                        'software_id' => $app_id,
-                        'is_active' => 1
-                    ];
-                    $this->business_setting->updateOrInsert(['key' => 'app_activation'], [
-                        'value' => json_encode($previous_active)
-                    ]);
-                }
-
-                Toastr::success('succesfully activated');
-                return back();
-            }
-
-        } catch (\Exception $exception) {
-            Toastr::warning('invalid purchase code');
-            return back();
-        }
-
-        Toastr::warning('invalid purchase code');
-        return back();
-    }
 }
