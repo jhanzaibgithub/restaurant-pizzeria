@@ -308,7 +308,7 @@
                         </td>
                         <td>
                             <a class="text-order_id"
-                                href="{{ route('admin.orders.details', ['id' => $order['id']]) }}">{{ $order['id'] }}</a>
+                                href="{{ route('branch.orders.details', ['id' => $order['id']]) }}">{{ $order['id'] }}</a>
                         </td>
                         <td>
                             <span>{{ $order->branch ? $order->branch->name : 'Branch deleted!' }}</span>
@@ -347,7 +347,7 @@
                         <td class="text-capitalize">
                             <div class="d-flex justify-content-center gap-2">
                                 <a class="badge-soft-secondary px-2 py-1 rounded"
-                                    href="{{ route('admin.pos.order-details', ['id' => $order['id']]) }}">
+                                    href="{{ route('branch.orders.details', ['id' => $order['id']]) }}">
                                     {{ translate('View') }}</a>
                                 <span class="badge-soft-secondary px-2 py-1 rounded" target="_blank"
                                     onclick="print_invoice('{{ $order->id }}')">{{ translate('PDF') }}</span>
@@ -392,7 +392,7 @@
     </div>
 </div>
 @php($searchUrl = route('branch.order.search'))
-@php($statisticsUrl = route('admin.order-statistics'))
+@php($statisticsUrl = route('branch.order-statistics'))
 
 @endsection
 @push('script')
@@ -436,7 +436,7 @@
 <script>
     function print_invoice(order_id) {
         $.get({
-            url: '{{ url(' / ') }}/branch/pos/invoice/' + order_id,
+            url: '{{ url('/') }}/branch/pos/invoice/' + order_id,
             dataType: 'json',
             beforeSend: function() {
                 $('#loading').show();
