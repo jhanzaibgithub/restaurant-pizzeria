@@ -25,7 +25,7 @@
 
     <!-- Logo -->
     <div class="logo">
-        <img src="{{asset('assets/admin/img/logo1.png')}}" alt="" style="width: 106px;">
+        <img src="{{asset('assets/admin/img/logo1.png')}}" alt="" style="width: 50px;">
     </div>
 
     <div class="custom-container">

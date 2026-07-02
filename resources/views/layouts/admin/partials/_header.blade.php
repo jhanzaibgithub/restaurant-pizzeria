@@ -30,7 +30,7 @@
                                 <a class="rounded-circle"
                                 href="{{route('admin.dashboard')}}">
 
-                                    <img style="width: 106px;" src="{{asset('assets/admin/img/logo1.png')}}" alt="">
+                                    <img style="width: 50px;" src="{{asset('assets/admin/img/logo1.png')}}" alt="">
                                 </a>
                         </li>
 
