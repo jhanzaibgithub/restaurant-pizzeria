@@ -28,8 +28,7 @@ class LanguageController extends Controller
      */
     public function index(): Renderable
     {
-        $language = Helpers::get_business_settings('language') ?? [];
-        $language = is_array($language) ? $language : [];
+        $language = $this->languageSettings();
 
         return view('admin-views.business-settings.language.index', compact('language'));
     }
@@ -40,24 +39,18 @@ class LanguageController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $language = Helpers::get_business_settings('language');
-        if (!isset($language)) {
-            $this->business_setting->updateOrInsert(['key' => 'language'], [
-                'value' => '[{"id":"1","name":"english","direction":"ltr","code":"en","status":1,"default":true}]'
-            ]);
-            $language = Helpers::get_business_settings('language');
-        }
+        $language = $this->languageSettings();
 
         $lang_array = [];
         $codes = [];
-        foreach ($language as $key => $data) {
-            if ($data['code'] != $request['code']) {
+        foreach ($language as $data) {
+            if (($data['code'] ?? null) != $request['code']) {
                 if (!array_key_exists('default', $data)) {
-                    $default = array('default' => ($data['code'] == 'en') ? true : false);
+                    $default = array('default' => (($data['code'] ?? 'en') == 'en'));
                     $data = array_merge($data, $default);
                 }
                 $lang_array[] = $data;
-                $codes[] = $data['code'];
+                $codes[] = $data['code'] ?? '';
             }
         }
         $codes[] = $request['code'];
@@ -81,7 +74,7 @@ class LanguageController extends Controller
         ];
 
         $this->business_setting->updateOrInsert(['key' => 'language'], [
-            'value' => $lang_array
+            'value' => json_encode($lang_array)
         ]);
 
         Toastr::success(translate('Language Added!'));
@@ -94,9 +87,9 @@ class LanguageController extends Controller
      */
     public function update_status(Request $request): mixed
     {
-        $language = Helpers::get_business_settings('language');
+        $language = $this->languageSettings();
         $lang_array = [];
-        foreach ($language as $key => $data) {
+        foreach ($language as $data) {
             if ($data['code'] == $request['code']) {
                 $lang = [
                     'id' => $data['id'],
@@ -120,7 +113,7 @@ class LanguageController extends Controller
             }
         }
         $businessSetting = $this->business_setting->where('key', 'language')->update([
-            'value' => $lang_array
+            'value' => json_encode($lang_array)
         ]);
 
         return $businessSetting;
@@ -132,10 +125,10 @@ class LanguageController extends Controller
      */
     public function update_default_status(Request $request): RedirectResponse
     {
-        $language = Helpers::get_business_settings('language');
+        $language = $this->languageSettings();
         $lang_array = [];
 
-        foreach ($language as $key => $data) {
+        foreach ($language as $data) {
             if ($data['code'] == $request['code']) {
                 $lang = [
                     'id' => $data['id'],
@@ -160,7 +153,7 @@ class LanguageController extends Controller
         }
 
         $this->business_setting->where('key', 'language')->update([
-            'value' => $lang_array
+            'value' => json_encode($lang_array)
         ]);
 
         Toastr::success(translate('Default Language Changed!'));
@@ -177,9 +170,9 @@ class LanguageController extends Controller
             'name' => 'required',
         ]);
 
-        $language = Helpers::get_business_settings('language');
+        $language = $this->languageSettings();
         $lang_array = [];
-        foreach ($language as $key => $data) {
+        foreach ($language as $data) {
             if ($data['code'] == $request['code']) {
                 $lang = [
                     'id' => $data['id'],
@@ -203,7 +196,7 @@ class LanguageController extends Controller
             }
         }
         $this->business_setting->where('key', 'language')->update([
-            'value' => $lang_array
+            'value' => json_encode($lang_array)
         ]);
 
         Toastr::success(translate('Language updated!'));
@@ -258,17 +251,17 @@ class LanguageController extends Controller
      */
     public function delete($lang): RedirectResponse
     {
-        $language = Helpers::get_business_settings('language');
+        $language = $this->languageSettings();
 
         $del_default = false;
-        foreach ($language as $key => $data) {
+        foreach ($language as $data) {
             if ($data['code'] == $lang && array_key_exists('default', $data) && $data['default'] == true) {
                 $del_default = true;
             }
         }
 
         $lang_array = [];
-        foreach ($language as $key => $data) {
+        foreach ($language as $data) {
             if ($data['code'] != $lang) {
                 $lang_data = [
                     'id' => $data['id'],
@@ -283,7 +276,7 @@ class LanguageController extends Controller
         }
 
         $this->business_setting->where('key', 'language')->update([
-            'value' => $lang_array
+            'value' => json_encode($lang_array)
         ]);
 
         $dir = base_path('resources/lang/' . $lang);
@@ -309,9 +302,9 @@ class LanguageController extends Controller
     public function lang($local): RedirectResponse
     {
         $direction = 'ltr';
-        $language = Helpers::get_business_settings('language');
+        $language = $this->languageSettings();
 
-        foreach ($language as $key => $data) {
+        foreach ($language as $data) {
             if ($data['code'] == $local) {
                 $direction = $data['direction'] ?? 'ltr';
             }
@@ -323,5 +316,28 @@ class LanguageController extends Controller
         Session::put('direction', $direction);
 
         return redirect()->back();
+    }
+
+    private function languageSettings(): array
+    {
+        $language = Helpers::get_business_settings('language');
+        $language = is_array($language) ? array_values(array_filter($language, 'is_array')) : [];
+
+        if ($language === [] || !isset($language[0]['code'])) {
+            $language = [[
+                'id' => 1,
+                'name' => 'English',
+                'direction' => 'ltr',
+                'code' => 'en',
+                'status' => 1,
+                'default' => true,
+            ]];
+
+            $this->business_setting->updateOrInsert(['key' => 'language'], [
+                'value' => json_encode($language),
+            ]);
+        }
+
+        return $language;
     }
 }

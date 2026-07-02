@@ -35,14 +35,14 @@
                                     <div class="d-flex flex-wrap justify-content-between">
                                         <span class="text-dark input-label">{{translate('Cookie Text:')}}</span>
                                         <label class="switch--custom-label toggle-switch toggle-switch-sm d-inline-flex">
-                                            <input type="checkbox" name="status" value="1" class="toggle-switch-input" {{$cookies?($cookies['status']==1?'checked':''):''}}>
+                                            <input type="checkbox" name="status" value="1" class="toggle-switch-input" {{($cookies['status'] ?? 0)==1?'checked':''}}>
                                             <span class="toggle-switch-label text">
                                             <span class="toggle-switch-indicator"></span>
                                         </span>
                                         </label>
                                     </div>
                                     <div class="form-group pt-3">
-                                        <textarea name="text" class="form-control" rows="6" placeholder="{{ translate('Cookies text') }}" required>{{$cookies['text']}}</textarea>
+                                        <textarea name="text" class="form-control" rows="6" placeholder="{{ translate('Cookies text') }}" required>{{$cookies['text'] ?? ''}}</textarea>
                                     </div>
                                     <div class="btn--container justify-content-start gap-3">
                                     <button type="reset" class="btn btn-white text-order_id border-primary">{{translate('reset')}}</button>

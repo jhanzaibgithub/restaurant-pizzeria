@@ -221,7 +221,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @if(isset($language) && array_key_exists('code', $language[0]))
+                                @if(!empty($language) && array_key_exists('code', $language[0]))
                                     @foreach($language as $key =>$data)
                                         <tr>
                                             <td>{{$key+1}}</td>
@@ -268,7 +268,7 @@
             </div>
         </div>
 
-        @if(isset($language) && array_key_exists('code', $language[0]))
+        @if(!empty($language) && array_key_exists('code', $language[0]))
             @foreach($language as $key =>$data)
                 <div class="modal fade" id="lang-modal-update-{{$data['code']}}" tabindex="-1" role="dialog"
                      aria-hidden="true">

@@ -739,10 +739,10 @@ class BusinessSettingsController extends Controller
     {
         $tnc = $this->business_setting->where(['key' => 'terms_and_conditions'])->first();
         if ($tnc == false) {
-            $this->business_setting->insert([
-                'key' => 'terms_and_conditions',
+            $this->business_setting->updateOrInsert(['key' => 'terms_and_conditions'], [
                 'value' => '',
             ]);
+            $tnc = $this->business_setting->where(['key' => 'terms_and_conditions'])->first();
         }
         return view('admin-views.business-settings.terms-and-conditions', compact('tnc'));
     }
@@ -753,8 +753,8 @@ class BusinessSettingsController extends Controller
      */
     public function terms_and_conditions_update(Request $request): RedirectResponse
     {
-        $this->business_setting->where(['key' => 'terms_and_conditions'])->update([
-            'value' => $request->tnc,
+        $this->business_setting->updateOrInsert(['key' => 'terms_and_conditions'], [
+            'value' => $request->input('tnc', ''),
         ]);
 
         Toastr::success(translate('Terms and Conditions updated!'));
@@ -1684,7 +1684,10 @@ class BusinessSettingsController extends Controller
      */
     public function cookies_setup(): Renderable
     {
-        $cookies = Helpers::get_business_settings('cookies');
+        $cookies = array_merge([
+            'status' => 0,
+            'text' => '',
+        ], is_array(Helpers::get_business_settings('cookies')) ? Helpers::get_business_settings('cookies') : []);
 
         return view('admin-views.business-settings.cookies-setup-index', compact('cookies'));
     }
@@ -1697,8 +1700,8 @@ class BusinessSettingsController extends Controller
     {
         $this->business_setting->updateOrInsert(['key' => 'cookies'], [
             'value' => json_encode([
-                'status' => $request['status'],
-                'text' => $request['text'],
+                'status' => $request->has('status') ? 1 : 0,
+                'text' => $request->input('text', ''),
             ])
         ]);
 

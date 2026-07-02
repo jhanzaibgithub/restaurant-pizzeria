@@ -37,7 +37,7 @@
                     <form action="{{route('admin.business-settings.page-setup.terms-and-conditions')}}" method="post" id="tnc-form">
                         @csrf
                         <div class="form-group">
-                            <textarea class="ckeditor form-control" name="tnc">{!! $tnc->value !!}</textarea>
+                            <textarea class="ckeditor form-control" name="tnc">{!! $tnc?->value ?? '' !!}</textarea>
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 align-items-center">
